@@ -1,0 +1,141 @@
+/* Shared by every page: fonts, reset, the film slot, QR codes, the footer, and the policy pages.
+   Each app page restyles these through its own custom properties; nothing here sets a brand. */
+
+@font-face { font-family: Anton; font-display: swap; src: url(anton.woff2) format('woff2'); }
+@font-face { font-family: 'Roboto Condensed'; font-weight: 400; font-display: swap; src: url(roboto-condensed-400.woff2) format('woff2'); }
+@font-face { font-family: 'Roboto Condensed'; font-weight: 700; font-display: swap; src: url(roboto-condensed-700.woff2) format('woff2'); }
+@font-face { font-family: Bricolage; font-weight: 200 800; font-display: swap; src: url(bricolage.woff2) format('woff2'); }
+@font-face { font-family: Plex; font-weight: 400; font-display: swap; src: url(plex-sans-400.woff2) format('woff2'); }
+@font-face { font-family: Plex; font-weight: 600; font-display: swap; src: url(plex-sans-600.woff2) format('woff2'); }
+@font-face { font-family: 'Plex Mono'; font-weight: 500; font-display: swap; src: url(plex-mono-500.woff2) format('woff2'); }
+@font-face { font-family: Bodoni; font-weight: 400 900; font-display: swap; src: url(bodoni-moda.woff2) format('woff2'); }
+@font-face { font-family: Bodoni; font-style: italic; font-weight: 400 900; font-display: swap; src: url(bodoni-moda-italic.woff2) format('woff2'); }
+@font-face { font-family: Karla; font-weight: 200 800; font-display: swap; src: url(karla.woff2) format('woff2'); }
+@font-face { font-family: 'DM Mono'; font-display: swap; src: url(dm-mono-400.woff2) format('woff2'); }
+
+:root {
+  --bg: #f4f0e8;
+  --ink: #1c1a17;
+  --muted: #5b554b;
+  --line: rgba(28, 26, 23, 0.16);
+  --accent: #1c1a17;
+  --link: inherit;
+  --gutter: clamp(16px, 4.5vw, 40px);
+  --measure: 40rem;
+  --font-text: Plex, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'Plex Mono', ui-monospace, Consolas, monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 17px/1.6 var(--font-text);
+  overflow-wrap: break-word;
+  -webkit-font-smoothing: antialiased;
+}
+img, video, svg { display: block; max-width: 100%; }
+img { height: auto; }
+a { color: var(--link); text-underline-offset: 0.18em; }
+h1, h2, h3 { text-wrap: balance; }
+p, li, dd { text-wrap: pretty; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+
+.skip {
+  position: absolute; left: 12px; top: -60px; z-index: 50;
+  padding: 10px 14px; background: var(--ink); color: var(--bg); border-radius: 4px; font-weight: 600;
+}
+.skip:focus { top: 12px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* ---------------------------------------------------------------- the film slot
+   A muted, looping promo film with a real screenshot as its poster. site.js picks the 9:16 or 16:9
+   cut and quietly keeps the poster if neither file has been uploaded yet. */
+.film { position: relative; margin: 0; overflow: hidden; background: #000; aspect-ratio: 16 / 9; }
+.film.is-portrait { aspect-ratio: 9 / 16; }
+.film video { width: 100%; height: 100%; object-fit: cover; }
+.film__sound {
+  position: absolute; right: 10px; bottom: 10px; z-index: 2;
+  display: none; align-items: center; gap: 6px;
+  padding: 7px 11px; border: 0; border-radius: 99px;
+  background: rgba(0, 0, 0, 0.62); color: #fff; font: 600 13px/1 var(--font-text); cursor: pointer;
+}
+.film.is-playing .film__sound { display: inline-flex; }
+.film__play {
+  position: absolute; inset: 0; z-index: 1; display: none; place-items: center;
+  border: 0; background: transparent; cursor: pointer;
+}
+.film__play span { padding: 12px 18px; border-radius: 99px; background: rgba(0, 0, 0, 0.7); color: #fff; font: 600 15px/1 var(--font-text); }
+.film.wants-tap .film__play { display: grid; }
+
+/* ---------------------------------------------------------------- QR */
+.qr { width: 100%; height: auto; image-rendering: pixelated; border-radius: 4px; }
+
+/* ---------------------------------------------------------------- FAQ */
+.faq details { border-top: 1px solid var(--line); }
+.faq details:last-child { border-bottom: 1px solid var(--line); }
+.faq summary { cursor: pointer; padding: 16px 36px 16px 0; position: relative; list-style: none; font-weight: 600; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: '+'; position: absolute; right: 4px; top: 12px; font-size: 1.5em; line-height: 1; }
+.faq details[open] summary::after { content: '−'; }
+.faq details > div { padding: 0 0 18px; }
+.faq details > div > p:first-child { margin-top: 0; }
+
+/* ---------------------------------------------------------------- footer */
+.site-foot { border-top: 1px solid var(--line); padding: 32px var(--gutter) calc(32px + env(safe-area-inset-bottom, 0px)); font-size: 15px; }
+.site-foot__in { max-width: 72rem; margin: 0 auto; display: grid; gap: 12px; }
+.site-foot ul { display: flex; flex-wrap: wrap; gap: 6px 22px; margin: 0; padding: 0; list-style: none; }
+.site-foot a { color: inherit; }
+.site-foot__who, .site-foot__small { margin: 0; color: var(--muted); }
+.site-foot__small { font-size: 13px; }
+
+/* ---------------------------------------------------------------- policy pages */
+.legal { --bg: #f6f2ea; --ink: #1c1a17; --muted: #5b554b; --accent: #1c1a17; --link: #1c1a17; }
+.legal.app-shibobo { --brand: #2b2a26; --brand-ink: #e0a530; --brand-font: Anton, Impact, sans-serif; --accent: #b4452f; }
+.legal.app-predictly { --brand: #121815; --brand-ink: #ffd23f; --brand-font: Bricolage, system-ui, sans-serif; --accent: #0a6b3f; }
+.legal.app-cannaclub { --brand: #1a101e; --brand-ink: #e0b76d; --brand-font: Bodoni, Didot, Georgia, serif; --accent: #6b4a8a; }
+.legal.app-hub { --brand: #1c1a17; --brand-ink: #efe9dd; --brand-font: Plex, system-ui, sans-serif; --accent: #1c1a17; }
+
+.doc-top { background: var(--brand); color: var(--brand-ink); padding: 14px var(--gutter); }
+.doc-top__in { max-width: var(--measure); margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.doc-top a { color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; }
+.doc-top img { width: 32px; height: 32px; border-radius: 7px; }
+.doc-top .name { font: 400 22px/1 var(--brand-font); letter-spacing: 0.01em; }
+.app-predictly .doc-top .name { font-weight: 800; letter-spacing: -0.02em; }
+.doc-top .back { font: 600 14px/1 var(--font-text); color: #fff; opacity: 0.85; }
+
+.doc { max-width: var(--measure); margin: 0 auto; padding: 36px var(--gutter) 56px; }
+.doc h1 { font: 600 clamp(28px, 6vw, 40px)/1.15 var(--font-text); letter-spacing: -0.015em; margin: 0 0 8px; }
+.doc .meta { font: 500 14px/1.5 var(--font-mono); color: var(--muted); margin: 0 0 28px; }
+.doc h2 { font: 600 21px/1.3 var(--font-text); margin: 40px 0 10px; padding-top: 18px; border-top: 2px solid var(--ink); }
+.doc h3 { font: 600 17px/1.4 var(--font-text); margin: 26px 0 6px; }
+.doc p, .doc li { max-width: 68ch; }
+.doc ul, .doc ol { padding-left: 1.25em; }
+.doc li { margin: 6px 0; }
+.doc code { font: 500 0.88em var(--font-mono); background: rgba(28, 26, 23, 0.07); padding: 1px 5px; border-radius: 3px; overflow-wrap: anywhere; }
+.doc .short {
+  background: #fff; border: 1px solid var(--line); border-left: 6px solid var(--accent);
+  padding: 16px 18px; border-radius: 4px; margin: 0 0 8px;
+}
+.doc .short p { margin: 6px 0; }
+.doc .short h2 { margin: 0 0 6px; padding: 0; border: 0; font-size: 17px; text-transform: uppercase; letter-spacing: 0.08em; }
+.doc table { width: 100%; border-collapse: collapse; font-size: 15px; margin: 12px 0; }
+.doc th, .doc td { text-align: left; vertical-align: top; padding: 10px 8px 10px 0; border-bottom: 1px solid var(--line); }
+.doc th { font-weight: 600; }
+.doc .toc { font-size: 15px; columns: 2 14rem; column-gap: 24px; padding-left: 1.2em; }
+.doc .toc li { break-inside: avoid; margin: 3px 0; }
+.legal .site-foot { background: #ece6db; }
+
+@media (max-width: 480px) {
+  .doc table, .doc tbody, .doc tr, .doc td, .doc th { display: block; }
+  .doc thead { display: none; }
+  .doc tr { border-bottom: 1px solid var(--line); padding: 8px 0; }
+  .doc td, .doc th { border: 0; padding: 2px 0; }
+  .doc td[data-h]::before { content: attr(data-h) ': '; font-weight: 600; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+}
